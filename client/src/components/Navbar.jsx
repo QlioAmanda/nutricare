@@ -32,6 +32,14 @@ function Navbar() {
           <div className="flex items-center space-x-4">
             {user ? (
               <>
+                {user.role === "admin" && (
+                  <Link
+                    to="/admin/foods"
+                    className="text-gray-700 hover:text-emerald-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    Admin Panel
+                  </Link>
+                )}
                 <Link
                   to="/dashboard"
                   className="text-gray-700 hover:text-emerald-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
