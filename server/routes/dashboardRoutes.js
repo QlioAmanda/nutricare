@@ -1,24 +1,34 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/auth");
+const { getCalorieTarget } = require("../utils/calorieCalculator");
 
-// @desc    Get dashboard summary (Mock Data)
+// @desc    Get dashboard summary
 // @route   GET /api/dashboard/summary
 // @access  Private
-router.get("/summary", protect, (req, res) => {
-  // In Sprint 3, this will pull real data from FoodLog and User target.
-  // For now, we return mock data as requested.
-  res.json({
-    calories: {
-      consumed: 1800,
-      target: 2200,
-    },
-    macros: {
-      protein: 55,
-      carbs: 180,
-      fat: 45,
-    },
-  });
+router.get("/summary", protect, async (req, res) => {
+  try {
+    const user = req.user;
+    const { bmr, tdee } = getCalorieTarget(user);
+
+    // consumed & macros will be replaced with real FoodLog aggregation
+    // once the tracker feature is wired in this sprint.
+    res.json({
+      calories: {
+        consumed: 0,
+        target: tdee,
+      },
+      macros: {
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+      },
+      bmr,
+      tdee,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 module.exports = router;
