@@ -49,6 +49,46 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
+// @desc    Get food log history grouped by date
+// @route   GET /api/tracker/history
+// @access  Private
+router.get("/history", protect, async (req, res) => {
+  try {
+    const logs = await FoodLog.find({ userId: req.user._id })
+      .populate("foodId")
+      .sort({ date: -1 });
+
+    // Group logs by date
+    const history = logs.reduce((acc, log) => {
+      const date = log.date;
+      if (!acc[date]) {
+        acc[date] = {
+          date,
+          totalCalories: 0,
+          foods: [],
+        };
+      }
+
+      const calories = log.foodId ? log.foodId.calories * log.quantity : 0;
+      acc[date].totalCalories += calories;
+      
+      acc[date].foods.push({
+        _id: log._id,
+        foodName: log.foodId?.name || "Unknown",
+        quantity: log.quantity,
+        calories: Math.round(calories),
+      });
+
+      return acc;
+    }, {});
+
+    // Convert object to array and return
+    res.json(Object.values(history));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // @desc    Delete a food log entry
 // @route   DELETE /api/tracker/:id
 // @access  Private
