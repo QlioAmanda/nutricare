@@ -70,11 +70,13 @@ function AddFoodModal({ onFoodAdded }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium">
-          + Add Food
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger 
+        render={
+          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium">
+            + Add Food
+          </Button>
+        } 
+      />
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Add Food to Today's Log</DialogTitle>

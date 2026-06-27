@@ -16,6 +16,7 @@ function Profile() {
     try {
       await fetch("http://localhost:8000/api/auth/logout", {
         method: "POST",
+        credentials: "include",
       });
       logout();
       navigate("/");
